@@ -1,5 +1,7 @@
 // Copyright 2021 GHA Test Team
 
+#include <gtest/gtest.h>
+
 #include <deque>
 #include <map>
 #include <set>
@@ -7,7 +9,6 @@
 #include <vector>
 
 #include "textgen.h"
-#include <gtest/gtest.h>
 
 using Prefix = std::deque<std::string>;
 using Statetab = std::map<Prefix, std::vector<std::string>>;
@@ -43,7 +44,7 @@ TEST(MarkovTest, SingleSuffixChoice) {
   Prefix pref = {"one", "two"};
   table[pref].push_back("three");
   tg.setTable(table, pref);
-  std::string result = tg.generate(3);
+  std::string result = tg.generateString(3);
   EXPECT_EQ(result, "one two three ");
 }
 
@@ -57,7 +58,7 @@ TEST(MarkovTest, MultipleSuffixesRandom) {
   tg.setTable(table, pref);
   std::set<std::string> seen;
   for (int i = 0; i < 100; ++i) {
-    std::string result = tg.generate(3);
+    std::string result = tg.generateString(3);
     size_t pos = result.find_last_not_of(' ');
     std::string suffix = result.substr(8, pos - 8);
     seen.insert(suffix);
@@ -73,7 +74,7 @@ TEST(MarkovTest, GenerateExactLength) {
   Prefix pref2 = {"b", "c"}; table[pref2].push_back("d");
   Prefix pref3 = {"c", "d"}; table[pref3].push_back("e");
   tg.setTable(table, pref1);
-  std::string result = tg.generate(5);
+  std::string result = tg.generateString(5);
   EXPECT_EQ(result, "a b c d e ");
 }
 
@@ -83,7 +84,7 @@ TEST(MarkovTest, StopWhenNoSuffix) {
   Prefix pref = {"x", "y"};
   table[pref].push_back("z");
   tg.setTable(table, pref);
-  std::string result = tg.generate(10);
+  std::string result = tg.generateString(10);
   EXPECT_EQ(result, "x y z ");
 }
 
@@ -93,7 +94,7 @@ TEST(MarkovTest, PrefixSizeEffect) {
   Prefix pref1 = {"a"}; table[pref1].push_back("b");
   Prefix pref2 = {"b"}; table[pref2].push_back("a");
   tg.setTable(table, pref1);
-  std::string result = tg.generate(4);
+  std::string result = tg.generateString(4);
   EXPECT_EQ(result, "a b a b ");
 }
 
@@ -114,7 +115,7 @@ TEST(MarkovTest, GenerateDoesNotModifyTable) {
   Prefix pref = {"const", "test"};
   table[pref].push_back("suffix");
   tg.setTable(table, pref);
-  tg.generate(4);
+  tg.generateString(4);
   const auto& after = tg.getStatetab();
   ASSERT_EQ(after.size(), 1);
   auto it = after.find(pref);
@@ -133,7 +134,7 @@ TEST(MarkovTest, RandomChoiceCoversAll) {
   tg.setTable(table, pref);
   std::set<std::string> chosen;
   for (int i = 0; i < 500; ++i) {
-    std::string result = tg.generate(2);
+    std::string result = tg.generateString(2);
     size_t pos = result.find_last_not_of(' ');
     std::string suffix = result.substr(4, pos - 4);
     chosen.insert(suffix);
@@ -146,7 +147,7 @@ TEST(MarkovTest, EmptyTableReturnsEmptyString) {
   TextGenerator tg(2);
   Statetab empty;
   tg.setTable(empty, {});
-  std::string result = tg.generate(5);
+  std::string result = tg.generateString(5);
   EXPECT_TRUE(result.empty());
 }
 
@@ -160,7 +161,7 @@ TEST(MarkovTest, MultipleSuffixesSamePrefix) {
   tg.setTable(table, pref);
   std::set<std::string> found;
   for (int i = 0; i < 50; ++i) {
-    std::string result = tg.generate(3);
+    std::string result = tg.generateString(3);
     std::string suffix = result.substr(12, 1);
     found.insert(suffix);
     if (found.size() == 3) break;
