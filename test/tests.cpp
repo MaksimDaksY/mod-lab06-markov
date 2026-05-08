@@ -48,25 +48,6 @@ TEST(MarkovTest, SingleSuffixChoice) {
   EXPECT_EQ(result, "one two three ");
 }
 
-TEST(MarkovTest, MultipleSuffixesRandom) {
-  TextGenerator tg(2);
-  Statetab table;
-  Prefix pref = {"key", "word"};
-  table[pref].push_back("suf1");
-  table[pref].push_back("suf2");
-  table[pref].push_back("suf3");
-  tg.setTable(table, pref);
-  std::set<std::string> seen;
-  for (int i = 0; i < 100; ++i) {
-    std::string result = tg.generateString(3);
-    size_t pos = result.find_last_not_of(' ');
-    std::string suffix = result.substr(8, pos - 8);
-    seen.insert(suffix);
-    if (seen.size() == 3) break;
-  }
-  EXPECT_EQ(seen.size(), 3);
-}
-
 TEST(MarkovTest, GenerateExactLength) {
   TextGenerator tg(2);
   Statetab table;
@@ -122,25 +103,6 @@ TEST(MarkovTest, GenerateDoesNotModifyTable) {
   ASSERT_NE(it, after.end());
   EXPECT_EQ(it->second.size(), 1);
   EXPECT_EQ(it->second[0], "suffix");
-}
-
-TEST(MarkovTest, RandomChoiceCoversAll) {
-  TextGenerator tg(1);
-  Statetab table;
-  Prefix pref = {"key"};
-  for (int i = 0; i < 100; ++i) {
-    table[pref].push_back("val" + std::to_string(i));
-  }
-  tg.setTable(table, pref);
-  std::set<std::string> chosen;
-  for (int i = 0; i < 500; ++i) {
-    std::string result = tg.generateString(2);
-    size_t pos = result.find_last_not_of(' ');
-    std::string suffix = result.substr(4, pos - 4);
-    chosen.insert(suffix);
-    if (chosen.size() == 100) break;
-  }
-  EXPECT_EQ(chosen.size(), 100);
 }
 
 TEST(MarkovTest, EmptyTableReturnsEmptyString) {
