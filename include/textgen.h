@@ -17,6 +17,7 @@ class TextGenerator {
 
   void parseFile(const std::string& filename);
   void generate(int maxWords, const std::string& outputFile);
+  std::string generateString(int maxWords);
 
   const Statetab& getStatetab() const { return statetab; }
   const Prefix& getFirstPrefix() const { return firstPrefix; }
