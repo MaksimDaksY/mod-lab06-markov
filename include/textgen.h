@@ -5,6 +5,7 @@
 
 #include <deque>
 #include <map>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,7 @@ class TextGenerator {
   int NPREF;
   Statetab statetab;
   Prefix firstPrefix;
+  std::mt19937 rng;
 };
 
 #endif  // INCLUDE_TEXTGEN_H_
