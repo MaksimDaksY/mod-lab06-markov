@@ -50,22 +50,24 @@ void TextGenerator::parseFile(const std::string& filename) {
 }
 
 void TextGenerator::generate(int maxWords, const std::string& outputFile) {
-  if (statetab.empty()) {
-    std::cerr << "Table is empty. Please parse a file first." << std::endl;
-    return;
-  }
-
   std::ofstream out(outputFile);
   if (!out.is_open()) {
     std::cerr << "Cannot create output file: " << outputFile << std::endl;
     return;
   }
+  out << generateString(maxWords);
+  out.close();
+}
 
+std::string TextGenerator::generateString(int maxWords) {
+  if (statetab.empty()) {
+    return "";
+  }
+  std::string result;
   Prefix current = firstPrefix;
   for (const auto& w : current) {
-    out << w << " ";
+    result += w + " ";
   }
-
   int generated = NPREF;
   while (generated < maxWords) {
     auto it = statetab.find(current);
@@ -75,10 +77,10 @@ void TextGenerator::generate(int maxWords, const std::string& outputFile) {
     const auto& suffixes = it->second;
     int index = std::rand() % suffixes.size();
     std::string nextWord = suffixes[index];
-    out << nextWord << " ";
+    result += nextWord + " ";
     current.pop_front();
     current.push_back(nextWord);
     ++generated;
   }
-  out.close();
+  return result;
 }
