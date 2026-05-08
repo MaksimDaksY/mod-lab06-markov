@@ -3,12 +3,17 @@
 #include "textgen.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
-TextGenerator::TextGenerator(int npref) : NPREF(npref), rng(std::random_device{}()) {}
+TextGenerator::TextGenerator(int npref) : NPREF(npref) {
+  std::srand(std::time(nullptr));
+}
 
 void TextGenerator::parseFile(const std::string& filename) {
   std::ifstream file(filename);
@@ -70,13 +75,12 @@ std::string TextGenerator::generateString(int maxWords) {
       break;
     }
     const auto& suffixes = it->second;
-    std::uniform_int_distribution<> dist(0, suffixes.size() - 1);
-    int index = dist(rng);
+    int index = std::rand() % suffixes.size();
     std::string nextWord = suffixes[index];
     result += nextWord + " ";
     current.pop_front();
     current.push_back(nextWord);
-    generated++;
+    ++generated;
   }
   return result;
 }
