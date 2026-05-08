@@ -1,7 +1,7 @@
 // Copyright 2026 Maksim Drobyak
 
-#ifndef TEXTGEN_H
-#define TEXTGEN_H
+#ifndef INCLUDE_TEXTGEN_H_
+#define INCLUDE_TEXTGEN_H_
 
 #include <deque>
 #include <map>
@@ -9,26 +9,26 @@
 #include <vector>
 
 class TextGenerator {
-public:
-    using Prefix = std::deque<std::string>;
-    using Statetab = std::map<Prefix, std::vector<std::string>>;
+ public:
+  using Prefix = std::deque<std::string>;
+  using Statetab = std::map<Prefix, std::vector<std::string>>;
 
-    explicit TextGenerator(int npref = 2);
-    void parseFile(const std::string& filename);
-    void generate(int maxWords, const std::string& outputFile);
-    std::string generateString(int maxWords);
+  explicit TextGenerator(int npref = 2);
 
-    const Statetab& getStatetab() const { return statetab; }
-    const Prefix& getFirstPrefix() const { return firstPrefix; }
-    void setTable(const Statetab& newTable, const Prefix& first) {
-        statetab = newTable;
-        firstPrefix = first;
-    }
+  void parseFile(const std::string& filename);
+  void generate(int maxWords, const std::string& outputFile);
 
-private:
-    int NPREF;
-    Statetab statetab;
-    Prefix firstPrefix;
+  const Statetab& getStatetab() const { return statetab; }
+  const Prefix& getFirstPrefix() const { return firstPrefix; }
+  void setTable(const Statetab& newTable, const Prefix& first) {
+    statetab = newTable;
+    firstPrefix = first;
+  }
+
+ private:
+  int NPREF;
+  Statetab statetab;
+  Prefix firstPrefix;
 };
 
-#endif
+#endif  // INCLUDE_TEXTGEN_H_
