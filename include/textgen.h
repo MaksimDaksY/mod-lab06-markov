@@ -5,7 +5,6 @@
 
 #include <deque>
 #include <map>
-#include <random>
 #include <string>
 #include <vector>
 
@@ -18,7 +17,7 @@ class TextGenerator {
 
   void parseFile(const std::string& filename);
   void generate(int maxWords, const std::string& outputFile);
-  std::string generateString(int maxWords);
+  std::string generateString(int maxWords);   // для тестов
 
   const Statetab& getStatetab() const { return statetab; }
   const Prefix& getFirstPrefix() const { return firstPrefix; }
@@ -31,7 +30,6 @@ class TextGenerator {
   int NPREF;
   Statetab statetab;
   Prefix firstPrefix;
-  std::mt19937 rng;
 };
 
 #endif  // INCLUDE_TEXTGEN_H_
